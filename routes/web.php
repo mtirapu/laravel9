@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
 /* 
@@ -9,34 +10,26 @@ use Illuminate\Support\Facades\Route;
     Route::put      -> Actualizar
 */
 
-/* Si nos dirigimos a la direccion / (raiz), obtendremos la vista view->welcome */
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+/* Si nos dirigimos a la direccion / (raiz), obtendremos la vista view->welcome 
+Route::get('/', [PageController::class, 'home'] )->name('home');
 
-Route::get('blog', function () {
-
-    /* Como necesitamos un listado de las publicaciones,
-        vamos a realizar una consulta a la BD */
-
-    // Consulta BD
-
-    $posts = [
-        [ 'id' => 1, 'title' => 'PHP', 'slug' => 'php'],
-        [ 'id' => 2, 'title' => 'Laravel', 'slug' => 'laravel']
-    ];
-
-    /* Vamos a devolver una vista y tambien un array con los posts. */
-    return view('blog', [ 'posts' => $posts ]);
-})->name('blog');
+Route::get('blog', [PageController::class, 'blog'] )->name('blog');
 
 
-/* Podemos enviar una variable ($slug) a la funcion e imprimirla */
-Route::get('blog/{slug}', function ($slug) {
+/* Podemos enviar una variable ($slug) a la funcion e imprimirla
+Route::get('blog/{slug}', [PageController::class, 'post'])->name('post');
 
-    // Consulta a BD
+*/
 
-    $post = $slug;
+/* Para no estar repitiendo el nombre del controlador, utilizamos
+    los grupos. */
 
-    return view('post', [ 'post' => $post ]);
-})->name('post');
+Route::controller(PageController::class)->group( function () {
+
+    Route::get('/',             'home' )->name('home');
+
+    Route::get('blog',          'blog' )->name('blog');
+
+    Route::get('blog/{post:slug}',   'post' )->name('post');
+
+} );
