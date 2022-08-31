@@ -19,6 +19,7 @@ class PostFactory extends Factory
     {
         return [
             
+            'user_id' => 1,
             // El titulo es igual a una oracion falsa generada.
             'title' => $title = $this->faker->sentence(),
             'slug' => Str::slug($title),
